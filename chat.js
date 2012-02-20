@@ -1,20 +1,11 @@
-net = require("net");
+var express = require('express');
+var app = express.createServer(express.logger());
 
-var sockets = [];
-
-var s = net.Server(function(socket){
-  sockets.push(socket);
-
-  socket.on('data', function(d){
-    for (var i = 0; i < sockets.length; i++){
-      sockets[i].write(d);
-    }
-  });
-
-  socket.on('end', function(){
-    var i = sockets.indexOf(socket);
-    sockets.splice(i, 1);
-  });
+app.get('/', function(req, res){
+  res.send('Ahoy, Sea!');
 });
 
-s.listen(8000);
+var port = process.env.PORT || 3000;
+app.listen(port, function(){
+  console.log("Listening on " + port);
+});
