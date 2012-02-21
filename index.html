@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8">
+    <script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="client.js" type="text/javascript" charset="utf-8"></script>
+  
+    <title>the pirates chat</title>
+  </head>
+  <body>
+    <div id="app">
+      <div id="connect">
+        <form action="#">
+          <fieldset>
+            <p>
+              This is a chat room. Both client-side and server-side scripts were written in JavaScript.
+            </p>
+
+            <label for="nick">Name</label>
+            <input id="nickInput" class="text" type="text" name="nick" />
+            <input id="connectButton" class="button" type="submit" name="" value="Join" />
+          </fieldset>
+        </form>
+      </div>
+
+      <div id="loading"><p>loading..</p></div>
+      <div id="log"></div>
+
+      <div id="toolbar">
+        <ul id="status">
+          <li id="userName">(noone)</li>
+          <li><a id="usersLink" href="#">5 mateys</a></li>
+          <li>uptime: <span id="uptime">?</span></li>
+          <li>memory: <span id="rss">?</span>mb RSS</li>
+        </ul>
+        <input tabindex="1" type="text" id="entry" />
+      </div>
+    </div>
+  </body>
+</html>
