@@ -143,7 +143,7 @@ function getCookie(key){
 
 // used to keep the most recent messages visible
 function scrollDown(){
-  window.scrollBy(0, 1000000000000000);
+  window.scrollBy(0, 1000000000);
   $("entry").focus();
 }
 
