@@ -186,13 +186,35 @@ function addMessage(from, text, time, _class){
   if (_class) {
     messageElement.addClass(_class);
   } else {
-    nick_color = ' style="color: ' + CONFIG.color + '"';
+    nick_color = ' style="color: ' + CONFIG.color + ';';
   }
+
+  /////////////////////////////////////////////////////////////////////
+  //// Commands section
+  /////////////////////////////////////////////////////////////////////
+
+  // we check if user has written some command, like '/me walks into a bar.'
+  var m;
+  // default look of msg-text td.
+  var msg_text = '  <td class="msg-text">' + text + '</td>';
+  if (m = text.match(/^\/([\w]+)\s+(.*)$/)){
+    switch (m[1]){
+      case "me":
+        // if user /me something, it msg-text has to look a bit different
+        msg_text = '  <td class="msg-text" style="font-style: italic; font-weight: bold;">' + m[2] + '</td>'
+        // we also have to modify the name a bit
+        nick_color += "font-style: italic;";
+        break;
+    }
+  }
+
+  // close the style attribute in name
+  nick_color += "\"";
 
   var content = '<tr>'
               + '  <td class="date">' + util.timeString(time) + '</td>'
               + '  <td class="nick"' + nick_color + '>' + util.toStaticHTML(from) + '</td>'
-              + '  <td class="msg-text">' + text + '</td>'
+              + msg_text
               + '</tr>'
               ;
 
