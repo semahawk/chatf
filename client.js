@@ -213,9 +213,10 @@ function updateUptime(){
 
 var transmission_errors = 0;
 var first_poll = true;
+var n = -1; // used for displaying info about long poll error.
 
 function longPoll(data){
-  if (transmission_errors > 2) {
+  if (transmission_errors > 20) {
     showConnect();
     return;
   }
@@ -263,6 +264,7 @@ function longPoll(data){
     }
   }
 
+
   //make another request
   $.ajax({ cache: false
          , type: "GET"
@@ -270,23 +272,25 @@ function longPoll(data){
          , dataType: "json"
          , data: { since: CONFIG.last_message_time, id: CONFIG.id }
          , error: function () {
-             addMessage("", "long poll error. trying again...", new Date(), "error");
+             if (n % 10 == 0) addMessage("", "long poll error, trying again...", new Date(), "error");
              $("#userName").html("!" + CONFIG.nick);
              transmission_errors += 1;
-             //don't flood the servers on error, wait 10 seconds before retrying
-             setTimeout(longPoll, 10*1000);
+             // Wait 1 sec before retrying. We're gonna output info after every ten secends however. Yay!
+             setTimeout(longPoll, 1000);
            }
          , success: function (data) {
              transmission_errors = 0;
+             n = -1;
              //if everything went well, begin another request immediately
              //the server will take a long time to respond
              //how long? well, it will wait until there is another message
              //and then it will return it to us and close the connection.
              //since the connection is closed when we get data, we longPoll again
-             $("#userName").html(CONFIG.nick);
              longPoll(data);
            }
          });
+  n++;
+  $("#userName").html("&nbsp;" + CONFIG.nick);
 }
 
 // submit a new message to the server
@@ -360,7 +364,7 @@ function onConnect(session){
     updateTitle();
   });
 
-  $("#userName").html(CONFIG.nick);
+  $("#userName").html("&nbsp;" + CONFIG.nick);
 }
 
 // add a list of present chat members to the stream
