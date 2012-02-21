@@ -271,6 +271,7 @@ function longPoll(data){
          , data: { since: CONFIG.last_message_time, id: CONFIG.id }
          , error: function () {
              addMessage("", "long poll error. trying again...", new Date(), "error");
+             $("#userName").html("!" + CONFIG.nick);
              transmission_errors += 1;
              //don't flood the servers on error, wait 10 seconds before retrying
              setTimeout(longPoll, 10*1000);
@@ -282,6 +283,7 @@ function longPoll(data){
              //how long? well, it will wait until there is another message
              //and then it will return it to us and close the connection.
              //since the connection is closed when we get data, we longPoll again
+             $("#userName").html(CONFIG.nick);
              longPoll(data);
            }
          });
