@@ -61,7 +61,7 @@ a:hover {
   color: #fff;
   width: 100%;
   bottom: 0;
-  background: #733;
+  background: #773333;
   padding-left: 30px;
 }
 
@@ -84,9 +84,9 @@ a:hover {
   overflow: hidden;
 }
 
-.notice td, .join td, .part td, .message .date { color: #555; }
-.error td { color: #933; }
-.personal .nick, .notice .nick { color: #cd5; }
+.notice td, .join td, .part td, .message .date { color: #555555; }
+.error td { color: #993333; }
+.personal .nick, .notice .nick { color: #ccdd55; }
 
 .message {
   margin: 0.1em 0;

@@ -1,9 +1,10 @@
 var CONFIG = { debug: false,
-               nick: "#", // set in onConnect
-               id: null,  // same here
+               nick: "#",            // set in onConnect
+               id: null,             // same here
+               color: "#fff",     // would be replaced
                last_message_time: 1,
-               focus: true, // event listeners bound in onConnect
-               unread: 0   // updated in the message-proccesing loop
+               focus: true,          // event listeners bound in onConnect
+               unread: 0             // updated in the message-proccesing loop
 };
 
 var nicks = [];
@@ -166,9 +167,6 @@ function addMessage(from, text, time, _class){
   //    the content
   var messageElement = $(document.createElement("table"));
 
-  messageElement.addClass("message");
-  if (_class) messageElement.addClass(_class);
-
   // sanitize
   text = util.toStaticHTML(text);
 
@@ -180,9 +178,20 @@ function addMessage(from, text, time, _class){
   // replace URLs with links
   text = text.replace(util.urlRE, '<a target="_blank" href="$&">$&</a>');
 
+  messageElement.addClass("message");
+
+  // whether it's a colored user (null - it is not)
+  var nick_color = null;
+
+  if (_class) {
+    messageElement.addClass(_class);
+  } else {
+    nick_color = ' style="color: ' + CONFIG.color + '"';
+  }
+
   var content = '<tr>'
               + '  <td class="date">' + util.timeString(time) + '</td>'
-              + '  <td class="nick">' + util.toStaticHTML(from) + '</td>'
+              + '  <td class="nick"' + nick_color + '>' + util.toStaticHTML(from) + '</td>'
               + '  <td class="msg-text">' + text + '</td>'
               + '</tr>'
               ;
@@ -340,14 +349,15 @@ function onConnect(session){
     return;
   }
 
-  CONFIG.nick = session.nick;
-  CONFIG.id   = session.id;
-  starttime   = new Date(session.starttime);
-  rss         = session.rss;
+  CONFIG.nick  = session.nick;
+  CONFIG.id    = session.id;
+  CONFIG.color = session.color;
+  starttime    = new Date(session.starttime);
+  rss          = session.rss;
   updateRSS();
   updateUptime();
 
-  setCookie("beenhere", CONFIG.nick, 7 * 24 * 60 * 60 * 1000); // expires in a week (I hope so..)
+  setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000); // expires in a week (I hope so..)
 
   // update the UI to show the chat
   showChat(CONFIG.nick);
@@ -395,13 +405,14 @@ $(document).ready(function(){
 
   // if cookie 'beenhere' is set, don't ask the user for nick and don't validate it, since it already was, but just log him in.
   if (getCookie('beenhere')){
-    var nick = getCookie("beenhere");
+    var nick = getCookie("beenhere").split("|")[0].split(":")[1];
+    var color = getCookie("beenhere").split("|")[1].split(":")[1];
 
     $.ajax({ cache: false,
              type: "GET",
              dataType: "json",
              url: "/join",
-             data: { nick: nick },
+             data: { nick: nick, color: color },
              error: function(){
                alert("error connecting to the server");
                showConnect();
@@ -413,6 +424,7 @@ $(document).ready(function(){
       // lock the UI while waiting for a response
       showLoad();
       var nick = $("#nickInput").attr("value");
+      var color = $("#colorInput").attr("value");
 
       // dont bother the backend if we fail easy validations
       if (nick.length > 50){
@@ -429,11 +441,19 @@ $(document).ready(function(){
         return false;
       }
 
+      if (color == "") color = "#fff";
+
+      else if (!color.match(/^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/)){
+        alert("Bad HEX format.");
+        showConnect();
+        return false;
+      }
+      
       $.ajax({ cache: false,
                type: "GET",
                dataType: "json",
                url: "/join",
-               data: { nick: nick },
+               data: { nick: nick, color: color },
                error: function(){
                  alert("error connecting to the server");
                  showConnect();

@@ -77,9 +77,10 @@ var channel = new function(){
 
 var sessions = {};
 
-function createSession (nick){
+function createSession (nick, color){
   if (nick.length > 50) return null;
   if (/[^\w_\-^!]/.exec(nick)) return null;
+  if (!color.match(/^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/)) return null;
 
   for (var i in sessions){
     var session = sessions[i];
@@ -88,6 +89,7 @@ function createSession (nick){
 
   var session = {
     nick: nick,
+    color: color,
     id: Math.floor(Math.random() * 9999999999).toString(),
     timestamp: new Date(),
 
@@ -139,12 +141,13 @@ fu.get("/who", function(req, res){
 
 fu.get("/join", function(req, res){
   var nick = qs.parse(url.parse(req.url).query).nick;
+  var color = qs.parse(url.parse(req.url).query).color;
   if (nick == null || nick.length == 0){
     res.simpleJSON(400, { error: "Baad name, matey!"});
     return;
   }
 
-  var session = createSession(nick);
+  var session = createSession(nick, color);
   if (session == null){
     res.simpleJSON(400, { error: "Name in use." });
     return;
@@ -152,6 +155,7 @@ fu.get("/join", function(req, res){
 
   channel.appendMessage(session.nick, "join");
   res.simpleJSON(200, { id: session.id,
+                        color: session.color,
                         nick: session.nick,
                         rss: mem.rss,
                         starttime: starttime });
