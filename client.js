@@ -122,7 +122,23 @@ util = {
     var blank = /^\s*$/;
     return (text.match(blank) !== null);
   }
+
 };
+
+// sets a cookie called `key` with a value of `value` which expires in `expire` expressed in milliseconds.
+//
+// setCookie('ahoy', 'sea', 10 * 1000); creates a cookie called 'ahoy' with value 'sea' for ten seconds.
+function setCookie(key, value, expire){
+  var expires = new Date();
+  expires.setTime(expires.getTime() + expire);
+  document.cookie = key + "=" + value + ";expires=" + expires.toUTCString() + ';path="/"';
+}
+
+// getCookie('ahoy'); returns 'sea'
+function getCookie(key){
+  var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+  return keyValue ? keyValue[2] : null;
+}
 
 // used to keep the most recent messages visible
 function scrollDown(){
@@ -325,6 +341,8 @@ function onConnect(session){
   updateRSS();
   updateUptime();
 
+  setCookie("beenhere", CONFIG.nick, 7 * 24 * 60 * 60 * 1000); // expires in a week (I hope so..)
+
   // update the UI to show the chat
   showChat(CONFIG.nick);
 
@@ -369,26 +387,9 @@ $(document).ready(function(){
 
   $("#usersLink").click(outputUsers);
 
-  // try joining the chat when the user clicks the connect button
-  $("#connectButton").click(function(){
-    // lock the UI while waiting for a response
-    showLoad();
-    var nick = $("#nickInput").attr("value");
-
-    // dont bother the backend if we fail easy validations
-    if (nick.length > 50){
-      alert("Name is too long, matey. 50 chars max.");
-      showConnect();
-      return false;
-    }
-
-    // some more validations
-    if (/[^\w\-_^!]/.exec(nick)){
-      alert("Bad character in name." +
-            "Can only be letters, numbers and '_', '-', '^'");
-      showConnect();
-      return false;
-    }
+  // if cookie 'beenhere' is set, don't ask the user for nick and don't validate it, since it already was, but just log him in.
+  if (getCookie('beenhere')){
+    var nick = getCookie("beenhere");
 
     $.ajax({ cache: false,
              type: "GET",
@@ -400,9 +401,42 @@ $(document).ready(function(){
                showConnect();
              }, success: onConnect
     });
+  } else { // there is no such cookie.
+    // try joining the chat when the user clicks the connect button
+    $("#connectButton").click(function(){
+      // lock the UI while waiting for a response
+      showLoad();
+      var nick = $("#nickInput").attr("value");
 
-    return false;
-  });
+      // dont bother the backend if we fail easy validations
+      if (nick.length > 50){
+        alert("Name is too long, matey. 50 chars max.");
+        showConnect();
+        return false;
+      }
+
+      // some more validations
+      if (/[^\w\-_^!]/.exec(nick)){
+        alert("Bad character in name." +
+              "Can only be letters, numbers and '_', '-', '^'");
+        showConnect();
+        return false;
+      }
+
+      $.ajax({ cache: false,
+               type: "GET",
+               dataType: "json",
+               url: "/join",
+               data: { nick: nick },
+               error: function(){
+                 alert("error connecting to the server");
+                 showConnect();
+               }, success: onConnect
+      });
+
+      return false;
+    });
+  }
 
   // update the daemon uptime every 10 seconds
   setInterval(function(){
