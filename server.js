@@ -22,8 +22,9 @@ var channel = new function(){
   var messages  = [],
       callbacks = [];
 
-  this.appendMessage = function(nick, type, text){
+  this.appendMessage = function(nick, color, type, text){
     var m = { nick: nick,
+              color: color,
               type: type, // "msg", "join", "part"
               text: text,
               timestamp: (new Date()).getTime() };
@@ -98,7 +99,7 @@ function createSession (nick, color){
     },
 
     destroy: function(){
-      channel.appendMessage(session.nick, "part");
+      channel.appendMessage(session.nick, session.color, "part");
       delete sessions[session.id];
     },
   };
@@ -153,7 +154,7 @@ fu.get("/join", function(req, res){
     return;
   }
 
-  channel.appendMessage(session.nick, "join");
+  channel.appendMessage(session.nick, session.color, "join");
   res.simpleJSON(200, { id: session.id,
                         color: session.color,
                         nick: session.nick,
@@ -205,6 +206,6 @@ fu.get("/send", function(req, res){
 
   session.poke();
 
-  channel.appendMessage(session.nick, "msg", text);
+  channel.appendMessage(session.nick, session.color, "msg", text);
   res.simpleJSON(200, { rss: mem.rss });
 });

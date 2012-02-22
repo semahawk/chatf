@@ -1,13 +1,15 @@
 var CONFIG = { debug: false,
                nick: "#",            // set in onConnect
                id: null,             // same here
-               color: "#fff",     // would be replaced
+               color: "#ffffff",
                last_message_time: 1,
                focus: true,          // event listeners bound in onConnect
                unread: 0             // updated in the message-proccesing loop
 };
 
 var nicks = [];
+var colors = [];
+//var colors = ["#ede39d", "#993333", "#fefefe"];
 
 Date.prototype.toRelativeTime = function(now){
   var delta = new Date() - this;
@@ -62,7 +64,7 @@ function updateUsersLink(){
 // handles another person joining the chat
 function userJoin(nick, timestamp){
   // put it in the stream
-  addMessage(nick, "joined", timestamp, "join");
+  addMessage(nick, "#555555", "joined", timestamp, "join");
   // if we already know him, we ignore him
   for (var i = 0; i < nicks.lenght; i++)
     if (nicks[i] == nick) return;
@@ -75,7 +77,7 @@ function userJoin(nick, timestamp){
 // handles someone leaving
 function userPart(nick, timestamp){
   // put it in the stream
-  addMessage(nick, "left", timestamp, "part");
+  addMessage(nick, "#555555", "left", timestamp, "part");
   // remove him from the list
   for (var i = 0; i < nicks.length; i++){
     if (nicks[i] == nick){
@@ -126,6 +128,18 @@ util = {
 
 };
 
+function setColor(nick, color){
+  for (var i in nicks){
+    if (nicks[i] == nick) colors[i] = color;
+  }
+}
+
+function getColor(nick){
+  for (var i in nicks){
+    if (nicks[i] == nick) return colors[i];
+  }
+}
+
 // sets a cookie called `key` with a value of `value` which expires in `expire` expressed in milliseconds.
 //
 // setCookie('ahoy', 'sea', 10 * 1000); creates a cookie called 'ahoy' with value 'sea' for ten seconds.
@@ -152,7 +166,7 @@ function scrollDown(){
 // from is the user, text is the body and time is the timestamp, defaulting
 // to now. _class is a css class to apply to the message, usefull for system
 // events.
-function addMessage(from, text, time, _class){
+function addMessage(from, color, text, time, _class){
   if (text === null) return;
 
   if (time == null){
@@ -186,7 +200,7 @@ function addMessage(from, text, time, _class){
   if (_class) {
     messageElement.addClass(_class);
   } else {
-    nick_color = ' style="color: ' + CONFIG.color + ';';
+    nick_color = ' style="color: ' + color + ';';
   }
 
   /////////////////////////////////////////////////////////////////////
@@ -272,7 +286,7 @@ function longPoll(data){
           if(!CONFIG.focus){
             CONFIG.unread++;
           }
-          addMessage(message.nick, message.text, message.timestamp);
+          addMessage(message.nick, message.color, message.text, message.timestamp);
           break;
 
         case "join":
@@ -375,7 +389,9 @@ function onConnect(session){
   updateRSS();
   updateUptime();
 
-  setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000); // expires in a week (I hope so..)
+  setColor(session.nick, session.color);
+
+  setCookie("beenhere", "nick:" + session.nick + "|color:" + session.color, 7 * 24 * 60 * 60 * 1000); // expires in a week (I hope so..)
 
   // update the UI to show the chat
   showChat(CONFIG.nick);
@@ -398,7 +414,7 @@ function onConnect(session){
 // add a list of present chat members to the stream
 function outputUsers(){
   var nick_string = nicks.length > 0 ? nicks.join(", ") : "(noone)";
-  addMessage("users:", nick_string, new Date(), "notice");
+  addMessage("users:", "#fff", nick_string, new Date(), "notice");
   return false;
 }
 
