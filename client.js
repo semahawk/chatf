@@ -7,6 +7,29 @@ var CONFIG = { debug: false,
                unread: 0             // updated in the message-proccesing loop
 };
 
+var history = {
+  position: 0,
+  stack: [],
+  
+  getPrev: function(){
+    if (this.position < this.stack.length)
+      this.position++;
+
+    return this.stack[this.stack.length - this.position];
+  },
+
+  getNext: function(){
+    if (this.position >= 2)
+      this.position--;
+    else {
+      this.position = 0;
+      return "";
+    }
+
+    return this.stack[this.stack.length - this.position];
+  }
+};
+
 var nicks = [];
 var colors = [];
 //var colors = ["#ede39d", "#993333", "#fefefe"];
@@ -427,11 +450,30 @@ function who(){
 }
 
 $(document).ready(function(){
+  $("#entry").keypress(function(e){
+    switch (e.keyCode){
+      case 38: // up arrow clicked
+        $("#entry").attr("value", history.getPrev());
+        break;
+      case 40: // down arrow clicked
+        $("#entry").attr("value", history.getNext());
+        break;
+    }
+  });
+
+
   // submit new messages when user hits enter if the message isnt blank.
   $("#entry").keypress(function(e){
     if (e.keyCode != 13 /* Return/Enter key */) return;
     var msg = $("#entry").attr("value").replace("\n", "");
     if (!util.isBlank(msg)) send(msg);
+
+    if (msg != history.stack[history.stack.length - 1])
+      history.stack.push(msg); // add message to the history stack
+                               // unless its exactly the same as the previous one
+    history.position = 0; // after sending a message, reset position back
+                          // to zero, to make it behave correctly
+
     $("#entry").attr("value", ""); // clear the entry field
   });
 
