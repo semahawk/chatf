@@ -138,9 +138,10 @@ util = {
   //it is almost 8 o'clock PM here
   //timeString(new Date); returns "19:49"
   timeString: function (date) {
+    var seconds = date.getSeconds().toString();
     var minutes = date.getMinutes().toString();
     var hours = date.getHours().toString();
-    return this.zeroPad(2, hours) + ":" + this.zeroPad(2, minutes);
+    return this.zeroPad(2, hours) + ":" + this.zeroPad(2, minutes) + ":" + this.zeroPad(2, seconds);
   },
 
   //does the argument only contain whitespace?
