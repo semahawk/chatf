@@ -279,15 +279,9 @@ function updateUptime(){
   }
 }
 
-var transmission_errors = 0;
 var first_poll = true;
 
 function longPoll(data){
-  if (transmission_errors > 20) {
-    showConnect();
-    return;
-  }
-
   if (data && data.rss) {
     rss = data.rss;
     updateRSS();
@@ -340,12 +334,10 @@ function longPoll(data){
          , data: { since: CONFIG.last_message_time, id: CONFIG.id }
          , error: function () {
              if (CONFIG.debug) $("#userName").html("!" + CONFIG.nick);
-             transmission_errors += 1;
              // Wait 1 sec before retrying. We're gonna output info after every ten secends however. Yay!
              setTimeout(longPoll, 1000);
            }
          , success: function (data) {
-             transmission_errors = 0;
              //if everything went well, begin another request immediately
              //the server will take a long time to respond
              //how long? well, it will wait until there is another message
