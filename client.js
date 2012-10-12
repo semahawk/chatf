@@ -381,9 +381,9 @@ function showChat(nick){
 
 function updateTitle(){
   if (CONFIG.unread){
-    document.title = "(" + CONFIG.unread.toString() + ") the pirates chat";
+    document.title = "(" + CONFIG.unread.toString() + ") chatf";
   } else {
-    document.title = "the pirates chat";
+    document.title = "chatf";
   }
 }
 
