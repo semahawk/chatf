@@ -208,11 +208,6 @@ function addMessage(from, color, text, time, _class){
   // sanitize
   text = util.toStaticHTML(text);
 
-  // if the current user said this, add a special css class
-  var nick_re = new RegExp(CONFIG.nick);
-  if (nick_re.exec(text))
-    messageElement.addClass("personal");
-
   // replace URLs with links
   text = text.replace(util.urlRE, '<a target="_blank" href="$&">$&</a>');
 
@@ -267,7 +262,7 @@ function addMessage(from, color, text, time, _class){
   var paren_color = "#32363B";
 
   // new Regular Expression object
-  var re = new RegExp(from, "i");
+  var re = new RegExp(CONFIG.nick, "i");
   // check if the messages text matches this primitive regexp
   if (text.match(re)){
     paren_color = "#B5B5B5";
@@ -454,7 +449,7 @@ function onConnect(session){
 // add a list of present chat members to the stream
 function outputUsers(){
   var nick_string = nicks.length > 0 ? nicks.join(", ") : "(noone)";
-  addMessage("users:", "#fff", nick_string, new Date(), "notice");
+  addMessage("users", "#666", nick_string, new Date(), "");
   return false;
 }
 
