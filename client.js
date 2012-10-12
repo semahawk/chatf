@@ -265,7 +265,7 @@ function addMessage(from, color, text, time, _class){
 
   var content = '<tr>'
               + '  <td class="date">' + util.timeString(time) + '</td>'
-              + '  <td class="nick"' + nick_color + '>&lt;' + util.toStaticHTML(from) + '&gt;</td>'
+              + '  <td class="nick"' + nick_color + '><span style="color: #32363B">&#91;</span>' + util.toStaticHTML(from) + '<span style="color: #32363B">&#93;</span></td>'
               + msg_text
               + '</tr>'
               ;
