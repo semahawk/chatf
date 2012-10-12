@@ -263,9 +263,19 @@ function addMessage(from, color, text, time, _class){
   // close the style attribute in name
   nick_color += "\"";
 
+  // parenthesis color
+  var paren_color = "#32363B";
+
+  // new Regular Expression object
+  var re = new RegExp(from, "i");
+  // check if the messages text matches this primitive regexp
+  if (text.match(re)){
+    paren_color = "#B5B5B5";
+  }
+
   var content = '<tr>'
               + '  <td class="date">' + util.timeString(time) + '</td>'
-              + '  <td class="nick"' + nick_color + '><span style="color: #32363B">&#91;</span>' + util.toStaticHTML(from) + '<span style="color: #32363B">&#93;</span></td>'
+              + '  <td class="nick"' + nick_color + '><span style="color: ' + paren_color + '";>&#91;</span>' + util.toStaticHTML(from) + '<span style="color: ' + paren_color + '">&#93;</span></td>'
               + msg_text
               + '</tr>'
               ;
