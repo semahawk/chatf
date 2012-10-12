@@ -218,15 +218,6 @@ function addMessage(from, color, text, time, _class){
 
   messageElement.addClass("message");
 
-  // whether it's a colored user (null - it is not)
-  var nick_color = null;
-
-  if (_class) {
-    messageElement.addClass(_class);
-  } else {
-    nick_color = ' style="color: ' + color + ';';
-  }
-
   /////////////////////////////////////////////////////////////////////
   //// Commands section
   /////////////////////////////////////////////////////////////////////
@@ -235,15 +226,38 @@ function addMessage(from, color, text, time, _class){
   var m;
   // default look of msg-text td.
   var msg_text = '  <td class="msg-text">' + text + '</td>';
-  if (m = text.match(/^\/([\w]+)\s+(.*)$/)){
+  if (m = text.match(/^\/([\w]+)(\s)?(.*)$/)){
     switch (m[1]){
       case "me":
+        // don't do it, if he said only /me (and maybe with an additional space
+        // after it)
+        if (m[2] == null) break;
+        if (m[3] == "") break;
         // if user /me something, it msg-text has to look a bit different
-        msg_text = '  <td class="msg-text" style="font-style: italic; font-weight: bold;">' + m[2] + '</td>'
+        msg_text = '  <td class="msg-text" style="font-style: italic; font-weight: bold;">' + m[3] + '</td>';
         // we also have to modify the name a bit
         nick_color += "font-style: italic;";
         break;
+
+      case "help":
+        // show him the help
+        msg_text = '  <td class="msg-text" style="color: #777">dostępne komendy:<br/>&nbsp;&nbsp;/me TEKST' + 
+                                                                               '<br/>&nbsp;&nbsp;/help' +
+                                                                               '</td>';
+        // change the name to "help"
+        from = "help";
+        // also change it's color
+        color = "#999";
     }
+  }
+
+  // whether it's a colored user (null - it is not)
+  var nick_color = null;
+
+  if (_class) {
+    messageElement.addClass(_class);
+  } else {
+    nick_color = ' style="color: ' + color + ';';
   }
 
   // close the style attribute in name
