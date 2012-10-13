@@ -470,19 +470,6 @@ function who(){
   }, "json");
 }
 
-//function outputHelp(){
-  //addMessage(CONFIG.nick, "#999", "", new Date(), "help");
-  //return false;
-//}
-
-//function help(){
-  //jQuery.get("/help", {}, function(data, status){
-    //if (status != "success") return;
-    //var text = data.text;
-    //outputHelp();
-  //}, "json");
-//}
-
 $(document).ready(function(){
   $("#entry").keypress(function(e){
     switch (e.keyCode){
@@ -512,7 +499,6 @@ $(document).ready(function(){
   });
 
   $("#usersLink").click(outputUsers);
-  //$("#helpLink").click(outputHelp);
 
   // if cookie 'beenhere' is set, don't ask the user for nick and don't validate it, since it already was, but just log him in.
   if (getCookie('beenhere')){

@@ -142,18 +142,6 @@ fu.get("/who", function(req, res){
                       , rss: mem.rss });
 });
 
-//fu.get("/help", function(req, res){
-  //var nicks = [];
-  //for (var id in sessions){
-    //if (!sessions.hasOwnProperty(id)) continue;
-    //var session = sessions[id];
-    //nicks.push(session.nick);
-  //}
-
-  //res.simpleJSON(200, { text: "help"
-                      //, rss: mem.rss });
-//});
-
 fu.get("/join", function(req, res){
   var nick = qs.parse(url.parse(req.url).query).nick;
   var color = qs.parse(url.parse(req.url).query).color;
