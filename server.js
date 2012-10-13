@@ -143,6 +143,13 @@ fu.get("/who", function(req, res){
 });
 
 fu.get("/help", function(req, res){
+  var nicks = [];
+  for (var id in sessions){
+    if (!sessions.hasOwnProperty(id)) continue;
+    var sessien = sessions[id];
+    nicks.push(session.nick);
+  }
+
   res.simpleJSON(200, { text: "help"
                       , rss: mem.rss });
 });
