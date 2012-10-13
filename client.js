@@ -453,7 +453,7 @@ function onConnect(session){
 // add a list of present chat members to the stream
 function outputUsers(){
   var nick_string = nicks.length > 0 ? nicks.join(", ") : "(noone)";
-  addMessage("users", "#666", nick_string, new Date());
+  addMessage("users", "#999", nick_string, new Date());
   return false;
 }
 
@@ -466,7 +466,7 @@ function who(){
 }
 
 function outputHelp(){
-  addMessage("help", "#666", "pomoc", new Date());
+  addMessage("help", "#999", "", new Date(), "help");
   return false;
 }
 
@@ -506,7 +506,8 @@ $(document).ready(function(){
     $("#entry").attr("value", ""); // clear the entry field
   });
 
-  $("#usersLink").click(outputHelp);
+  $("#usersLink").click(outputUsers);
+  $("#helpLink").click(outputHelp);
 
   // if cookie 'beenhere' is set, don't ask the user for nick and don't validate it, since it already was, but just log him in.
   if (getCookie('beenhere')){

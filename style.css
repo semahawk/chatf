@@ -116,6 +116,5 @@ a:hover {
   margin: 0 2em 0 0;
 }
 
-#usersLink {
-  color: inherit;
-}
+#usersLink { color: inherit; }
+#helpLink  { color: inherit; }
