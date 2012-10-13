@@ -325,7 +325,7 @@ function longPoll(data){
           break;
 
         case "help":
-          addMessage(message.nick, message.color, message.text, message.timestamp, "help");
+          help();
           break;
 
         case "join":
@@ -462,6 +462,19 @@ function who(){
     if (status != "success") return;
     nicks = data.nicks;
     outputUsers();
+  }, "json");
+}
+
+function outputHelp(){
+  addMessage("help", "#666", "pomoc", new Date());
+  return false;
+}
+
+function help(){
+  jQuery.get("/help", {}, function(data, status){
+    if (status != "success") return;
+    var text = data.text;
+    outputHelp();
   }, "json");
 }
 
