@@ -35,7 +35,6 @@ var history = {
 
 var nicks = [];
 var colors = [];
-//var colors = ["#ede39d", "#993333", "#fefefe"];
 
 Date.prototype.toRelativeTime = function(now){
   var delta = new Date() - this;
@@ -233,7 +232,7 @@ function addMessage(from, color, text, time, type = "normal"){
                                                                              '<br/>&nbsp;&nbsp;/help' +
                                                                              '</td>';
       // change the name to "help"
-      from = "help";
+      //from = "help";
       // also change it's color
       color = "#999";
   }
@@ -272,7 +271,13 @@ function addMessage(from, color, text, time, type = "normal"){
   messageElement.html(content);
 
   // the log is the stream that we view
-  $("#log").append(messageElement);
+  if (type == "help"){
+    if (from == CONFIG.nick){
+      $("#log").append(messageElement);
+    }
+  } else {
+    $("#log").append(messageElement);
+  }
 
   // always view the most recent message when it's added
   scrollDown();
@@ -325,7 +330,7 @@ function longPoll(data){
           break;
 
         case "help":
-          help();
+          addMessage(message.nick, message.color, message.text, message.timestamp, "help");
           break;
 
         case "join":
@@ -465,18 +470,18 @@ function who(){
   }, "json");
 }
 
-function outputHelp(){
-  addMessage("help", "#999", "", new Date(), "help");
-  return false;
-}
+//function outputHelp(){
+  //addMessage(CONFIG.nick, "#999", "", new Date(), "help");
+  //return false;
+//}
 
-function help(){
-  jQuery.get("/help", {}, function(data, status){
-    if (status != "success") return;
-    var text = data.text;
-    outputHelp();
-  }, "json");
-}
+//function help(){
+  //jQuery.get("/help", {}, function(data, status){
+    //if (status != "success") return;
+    //var text = data.text;
+    //outputHelp();
+  //}, "json");
+//}
 
 $(document).ready(function(){
   $("#entry").keypress(function(e){
@@ -507,7 +512,7 @@ $(document).ready(function(){
   });
 
   $("#usersLink").click(outputUsers);
-  $("#helpLink").click(outputHelp);
+  //$("#helpLink").click(outputHelp);
 
   // if cookie 'beenhere' is set, don't ask the user for nick and don't validate it, since it already was, but just log him in.
   if (getCookie('beenhere')){
