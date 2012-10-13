@@ -31,13 +31,13 @@ var channel = new function(){
 
     switch (type){
       case "msg":
-        sys.puts("<" + nick + "> " + text);
+        //sys.puts("<" + nick + "> " + text);
         break;
       case "join":
-        sys.puts(nick + " join");
+        //sys.puts(nick + " join");
         break;
       case "part":
-        sys.puts(nick + " part");
+        //sys.puts(nick + " part");
         break;
     }
 
@@ -206,6 +206,31 @@ fu.get("/send", function(req, res){
 
   session.poke();
 
-  channel.appendMessage(session.nick, session.color, "msg", text);
+///////////////////////////////////////////////////////////////////////////////
+// COMMANDS
+///////////////////////////////////////////////////////////////////////////////
+
+  // we check if user has written some command, like '/me walks into a bar.'
+  var m;
+  // check if it's some sort of a command
+  if (m = text.match(/^\/([\w]+)(\s)?(.*)$/)){
+    switch (m[1]){
+      case "me":
+        if (m[2] == null) break;
+        if (m[3] == "") break;
+
+        text = text.slice(4);
+        channel.appendMessage(session.nick, session.color, "me", text);
+        break;
+      case "help":
+        text = "";
+        channel.appendMessage(session.nick, session.color, "help", text);
+        break;
+    }
+  // it just a ordinary message
+  } else {
+    channel.appendMessage(session.nick, session.color, "msg", text);
+  }
+
   res.simpleJSON(200, { rss: mem.rss });
 });
