@@ -87,7 +87,7 @@ function updateUsersLink(){
 // handles another person joining the chat
 function userJoin(nick, timestamp){
   // put it in the stream
-  addMessage(nick, "#555555", "joined", timestamp, "join");
+  addMessage(nick, "#555555", "joined", timestamp);
   // if we already know him, we ignore him
   for (var i = 0; i < nicks.lenght; i++)
     if (nicks[i] == nick) return;
@@ -100,7 +100,7 @@ function userJoin(nick, timestamp){
 // handles someone leaving
 function userPart(nick, timestamp){
   // put it in the stream
-  addMessage(nick, "#555555", "left", timestamp, "part");
+  addMessage(nick, "#555555", "left", timestamp);
   // remove him from the list
   for (var i = 0; i < nicks.length; i++){
     if (nicks[i] == nick){
@@ -190,7 +190,7 @@ function scrollDown(){
 // from is the user, text is the body and time is the timestamp, defaulting
 // to now. _class is a css class to apply to the message, usefull for system
 // events.
-function addMessage(from, color, text, time, _class){
+function addMessage(from, color, text, time, type = "normal"){
   if (text === null) return;
 
   if (time == null){
@@ -213,47 +213,33 @@ function addMessage(from, color, text, time, _class){
 
   messageElement.addClass("message");
 
-  /////////////////////////////////////////////////////////////////////
-  //// Commands section
-  /////////////////////////////////////////////////////////////////////
-
-  // we check if user has written some command, like '/me walks into a bar.'
-  var m;
   // default look of msg-text td.
   var msg_text = '  <td class="msg-text">' + text + '</td>';
-  if (m = text.match(/^\/([\w]+)(\s)?(.*)$/)){
-    switch (m[1]){
-      case "me":
-        // don't do it, if he said only /me (and maybe with an additional space
-        // after it)
-        if (m[2] == null) break;
-        if (m[3] == "") break;
-        // if user /me something, it msg-text has to look a bit different
-        msg_text = '  <td class="msg-text" style="font-style: italic; font-weight: bold;">' + m[3] + '</td>';
-        // we also have to modify the name a bit
-        nick_color += "font-style: italic;";
-        break;
+  // see of what type the message is
+  switch (type){
+    case "me":
+      // if user /me something, it msg-text has to look a bit different
+      msg_text = '  <td class="msg-text" style="font-style: italic; font-weight: bold;">' + /*m[3]*/text + '</td>';
+      // we also have to modify the name a bit
+      nick_color += "font-style: italic;";
+      break;
 
-      case "help":
-        // show him the help
-        msg_text = '  <td class="msg-text" style="color: #777">dostępne komendy:<br/>&nbsp;&nbsp;/me TEKST' + 
-                                                                               '<br/>&nbsp;&nbsp;/help' +
-                                                                               '</td>';
-        // change the name to "help"
-        from = "help";
-        // also change it's color
-        color = "#999";
-    }
+    case "help":
+      // show him the help
+      msg_text = '  <td class="msg-text" style="color: #777">dostępne komendy:<br/>&nbsp;&nbsp;/me TEKST' +
+                                                                             '<br/>&nbsp;&nbsp;/help' +
+                                                                             '</td>';
+      // change the name to "help"
+      from = "help";
+      // also change it's color
+      color = "#999";
   }
 
   // whether it's a colored user (null - it is not)
   var nick_color = null;
 
-  if (_class) {
-    messageElement.addClass(_class);
-  } else {
-    nick_color = ' style="color: ' + color + ';';
-  }
+  // set nicks color
+  nick_color = ' style="color: ' + color + ';';
 
   // close the style attribute in name
   nick_color += "\"";
@@ -324,6 +310,14 @@ function longPoll(data){
             CONFIG.unread++;
           }
           addMessage(message.nick, message.color, message.text, message.timestamp);
+          break;
+
+        case "me":
+          addMessage(message.nick, message.color, message.text, message.timestamp, "me");
+          break;
+
+        case "help":
+          addMessage(message.nick, message.color, message.text, message.timestamp, "help");
           break;
 
         case "join":
@@ -450,7 +444,7 @@ function onConnect(session){
 // add a list of present chat members to the stream
 function outputUsers(){
   var nick_string = nicks.length > 0 ? nicks.join(", ") : "(noone)";
-  addMessage("users", "#666", nick_string, new Date(), "");
+  addMessage("users", "#666", nick_string, new Date());
   return false;
 }
 
