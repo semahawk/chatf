@@ -442,6 +442,7 @@ function onConnect(session){
 
   $("#userName").html("&nbsp;" + CONFIG.nick);
   $("#version").html(VERSION + "v");
+  $("#toolbar").css("background", CONFIG.color);
 }
 
 // add a list of present chat members to the stream
