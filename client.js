@@ -87,7 +87,7 @@ function updateUsersLink(){
 // handles another person joining the chat
 function userJoin(nick, timestamp){
   // put it in the stream
-  addMessage(nick, "#555555", "joined", timestamp, "join");
+  addMessage(nick, "#555555", "joined", timestamp);
   // if we already know him, we ignore him
   for (var i = 0; i < nicks.lenght; i++)
     if (nicks[i] == nick) return;
@@ -100,7 +100,7 @@ function userJoin(nick, timestamp){
 // handles someone leaving
 function userPart(nick, timestamp){
   // put it in the stream
-  addMessage(nick, "#555555", "left", timestamp, "part");
+  addMessage(nick, "#555555", "left", timestamp);
   // remove him from the list
   for (var i = 0; i < nicks.length; i++){
     if (nicks[i] == nick){
@@ -190,7 +190,7 @@ function scrollDown(){
 // from is the user, text is the body and time is the timestamp, defaulting
 // to now. _class is a css class to apply to the message, usefull for system
 // events.
-function addMessage(from, color, text, time, _class){
+function addMessage(from, color, text, time){
   if (text === null) return;
 
   if (time == null){
@@ -249,11 +249,8 @@ function addMessage(from, color, text, time, _class){
   // whether it's a colored user (null - it is not)
   var nick_color = null;
 
-  if (_class) {
-    messageElement.addClass(_class);
-  } else {
-    nick_color = ' style="color: ' + color + ';';
-  }
+  // set nicks color
+  nick_color = ' style="color: ' + color + ';';
 
   // close the style attribute in name
   nick_color += "\"";
@@ -449,7 +446,7 @@ function onConnect(session){
 // add a list of present chat members to the stream
 function outputUsers(){
   var nick_string = nicks.length > 0 ? nicks.join(", ") : "(noone)";
-  addMessage("users", "#666", nick_string, new Date(), "");
+  addMessage("users", "#666", nick_string, new Date());
   return false;
 }
 
