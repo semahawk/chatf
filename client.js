@@ -506,7 +506,7 @@ $(document).ready(function(){
     $("#entry").attr("value", ""); // clear the entry field
   });
 
-  $("#usersLink").click(outputUsers);
+  $("#usersLink").click(outputHelp);
 
   // if cookie 'beenhere' is set, don't ask the user for nick and don't validate it, since it already was, but just log him in.
   if (getCookie('beenhere')){
