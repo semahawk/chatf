@@ -146,7 +146,7 @@ fu.get("/help", function(req, res){
   var nicks = [];
   for (var id in sessions){
     if (!sessions.hasOwnProperty(id)) continue;
-    var sessien = sessions[id];
+    var session = sessions[id];
     nicks.push(session.nick);
   }
 
