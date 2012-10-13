@@ -1,3 +1,6 @@
+// DA VERSION
+var VERSION = "1.0";
+
 var CONFIG = { debug: false,
                nick: "#",            // set in onConnect
                id: null,             // same here
@@ -438,6 +441,7 @@ function onConnect(session){
   });
 
   $("#userName").html("&nbsp;" + CONFIG.nick);
+  $("#version").html(VERSION + "v");
 }
 
 // add a list of present chat members to the stream
