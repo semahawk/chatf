@@ -81,7 +81,9 @@ var sessions = {};
 function createSession (nick, color){
   if (nick.length > 50) return null;
   if (/[^\w_\-^!]/.exec(nick)) return null;
-  if (!color.match(/^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/)) return null;
+  if (!color.match(/^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/)) return null;
+  if (color.slice(0,1) != "#")
+    color = "#" + color;
 
   for (var i in sessions){
     var session = sessions[i];

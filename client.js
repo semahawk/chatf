@@ -535,8 +535,10 @@ $(document).ready(function(){
 
       if (color == "") color = "#fff";
 
-      else if (!color.match(/^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/)){
+      else if (!color.match(/^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/)){
         alert("Bad HEX format.");
+        if (color.slice(0,1) != "#")
+          color = "#" + color;
         showConnect();
         return false;
       }
