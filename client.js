@@ -222,7 +222,7 @@ function addMessage(from, color, text, time, type = "normal"){
   switch (type){
     case "me":
       // if user /me something, it msg-text has to look a bit different
-      msg_text = '  <td class="msg-text" style="font-style: italic; font-weight: bold;">' + /*m[3]*/text + '</td>';
+      msg_text = '  <td class="msg-text" style="font-style: italic; font-family: serif;">' + text + '</td>';
       // we also have to modify the name a bit
       nick_color += "font-style: italic;";
       break;
@@ -258,11 +258,16 @@ function addMessage(from, color, text, time, type = "normal"){
   }
 
   var content = '<tr>'
-              + '  <td class="date">' + util.timeString(time) + '</td>'
-              + '  <td class="nick"' + nick_color + '><span style="color: ' + paren_color + '";>&#91;</span>' + util.toStaticHTML(from) + '<span style="color: ' + paren_color + '">&#93;</span></td>'
-              + msg_text
-              + '</tr>'
-              ;
+              + '  <td class="date">' + util.timeString(time) + '</td>';
+  if (type == "me")
+     content +=
+                '  <td class="nick"' + nick_color + '>&nbsp;' + util.toStaticHTML(from) + '</td>';
+  else
+     content +=
+                '  <td class="nick"' + nick_color + '><span style="color: ' + paren_color + '";>&#91;</span>' + util.toStaticHTML(from) + '<span style="color: ' + paren_color + '">&#93;</span></td>';
+     content +=
+                msg_text
+              + '</tr>';
 
   messageElement.html(content);
 
