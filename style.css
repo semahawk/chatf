@@ -4,8 +4,8 @@ body {
 }
 
 body, #entry {
-  background: #22252a;
   color: #eee;
+  background: #22252a url("https://dl.dropbox.com/u/67258879/bg2.png") 0px 0px repeat;
 }
 
 body, table {
