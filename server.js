@@ -228,6 +228,8 @@ fu.get("/send", function(req, res){
         text = "";
         channel.appendMessage(session.nick, session.color, "help", text);
         break;
+      default:
+        channel.appendMessage(session.nick, "#DE142C", "error", "unknown command: \"" + m[1] + "\"");
     }
   // it just a ordinary message
   } else {

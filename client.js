@@ -235,6 +235,11 @@ function addMessage(from, color, text, time, type = "normal"){
       //from = "help";
       // also change it's color
       color = "#999";
+      break;
+
+    case "error":
+      msg_text = '  <td class="msg-text" style="color: #777">' + text + '</td>';
+      color = "#999";
   }
 
   // whether it's a colored user (null - it is not)
@@ -272,6 +277,10 @@ function addMessage(from, color, text, time, type = "normal"){
 
   // the log is the stream that we view
   if (type == "help"){
+    if (from == CONFIG.nick){
+      $("#log").append(messageElement);
+    }
+  } else if (type == "error"){
     if (from == CONFIG.nick){
       $("#log").append(messageElement);
     }
@@ -331,6 +340,10 @@ function longPoll(data){
 
         case "help":
           addMessage(message.nick, message.color, message.text, message.timestamp, "help");
+          break;
+
+        case "error":
+          error(message.text);
           break;
 
         case "join":
@@ -453,6 +466,10 @@ function onConnect(session){
   $("#userName").html("&nbsp;" + CONFIG.nick);
   $("#version").html(VERSION + "v");
   $("#toolbar").css("background", CONFIG.color);
+}
+
+function error(msg){
+  addMessage(CONFIG.nick, "#999", msg, new Date(), "error");
 }
 
 // add a list of present chat members to the stream
