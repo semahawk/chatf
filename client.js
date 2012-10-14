@@ -1,5 +1,5 @@
 // DA VERSION
-var VERSION = "1.2.0";
+var VERSION = "1.3.0";
 
 var CONFIG = { debug: false,
                nick: "#",            // set in onConnect
