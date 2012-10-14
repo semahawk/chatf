@@ -332,11 +332,11 @@ function longPoll(data){
           if(!CONFIG.focus){
             CONFIG.unread++;
           }
-          addMessage(CONFIG.nick, CONFIG.color, message.text, message.timestamp);
+          addMessage(message.nick, message.color, message.text, message.timestamp);
           break;
 
         case "me":
-          addMessage(CONFIG.nick, CONFIG.color, message.text, message.timestamp, "me");
+          addMessage(message.nick, message.color, message.text, message.timestamp, "me");
           break;
 
         case "set":
@@ -344,22 +344,19 @@ function longPoll(data){
           var val = message.text.split(";")[1];
           if (key == "nick"){
             if (val.length > 50){
-              addMessage(CONFIG.nick, CONFIG.color, "nick too long, 50 chars max.", message.timestamp, "error");
+              addMessage(message.nick, message.color, "nick too long, 50 chars max.", message.timestamp, "error");
               break;
             }
             if (/[^\w\-_^!]/.exec(val)){
-              addMessage(CONFIG.nick, CONFIG.color, "wrong nick format, can only be letters, numbers, and '_', '-', '^'", message.timestamp, "error");
+              addMessage(message.nick, message.color, "wrong nick format, can only be letters, numbers, and '_', '-', '^'", message.timestamp, "error");
               break;
             }
 
-            addMessage(CONFIG.nick, CONFIG.color, "i'm now known as '" + val + "'", message.timestamp, "me");
-            CONFIG.nick = val;
-            setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000);
-            $("#userName").html("&nbsp;" + CONFIG.nick);
+            changeNick(val);
           }
           else if (key == "color"){
             if (!val.match(/^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/)){
-              addMessage(CONFIG.nick, CONFIG.color, "bad hex format", message.timestamp, "error");
+              addMessage(message.nick, message.color, "bad hex format", message.timestamp, "error");
               break;
             }
             // check if he typed also the hash symbol
@@ -367,28 +364,26 @@ function longPoll(data){
             if (val.slice(0,1) != "#")
               val = "#" + val;
 
-            CONFIG.color = val;
-            setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000);
-            $("#toolbar").css("background", CONFIG.color);
+            changeColor(val);
           } else {
-            addMessage(CONFIG.nick, CONFIG.color, "unknown key '" + key + "'", message.timestamp, "error");
+            addMessage(message.nick, message.color, "unknown key '" + key + "'", message.timestamp, "error");
           }
           break;
 
         case "help":
-          addMessage(CONFIG.nick, CONFIG.color, message.text, message.timestamp, "help");
+          addMessage(message.nick, message.color, message.text, message.timestamp, "help");
           break;
 
         case "error":
-          addMessage(CONFIG.nick, CONFIG.color, message.text, message.timestamp, "error");
+          addMessage(message.nick, message.color, message.text, message.timestamp, "error");
           break;
 
         case "join":
-          userJoin(CONFIG.nick, message.timestamp);
+          userJoin(message.nick, message.timestamp);
           break;
 
         case "part":
-          userPart(CONFIG.nick, message.timestamp);
+          userPart(message.nick, message.timestamp);
           break;
       }
     }
@@ -518,6 +513,42 @@ function who(){
     nicks = data.nicks;
     outputUsers();
   }, "json");
+}
+
+function changeNick(newnick){
+  $.ajax({ cache: false,
+           type: "GET",
+           url: "/changenick",
+           dataType: "json",
+           data: { id: CONFIG.id, newnick: newnick },
+           error: function () {
+             addMessage(CONFIG.nick, CONFIG.color, "couldn't change nick", "error");
+           },
+           success: function (data) {
+             CONFIG.nick = newnick;
+             addMessage(CONFIG.nick, CONFIG.color, "i'm now known as '" + newnick + "'", new Date(), "me");
+             CONFIG.nick = newnick;
+             setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000);
+             $("#userName").html("&nbsp;" + CONFIG.nick);
+           },
+         });
+}
+
+function changeColor(newcolor){
+  $.ajax({ cache: false,
+           type: "GET",
+           url: "/changecolor",
+           dataType: "json",
+           data: { id: CONFIG.id, newcolor: newcolor },
+           error: function () {
+             addMessage(CONFIG.nick, CONFIG.color, "couldn't change color", "error");
+           },
+           success: function (data) {
+             CONFIG.color = newcolor;
+             setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000);
+             $("#toolbar").css("background", CONFIG.color);
+           },
+         });
 }
 
 $(document).ready(function(){
