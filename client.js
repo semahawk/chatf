@@ -229,6 +229,7 @@ function addMessage(from, color, text, time, type = "normal"){
     case "help":
       // show him the help
       msg_text = '  <td class="msg-text" style="color: #777">dostępne komendy:<br/>&nbsp;&nbsp;/me TEKST' +
+                                                                             '<br/>&nbsp;&nbsp;/set nick|color VALUE' +
                                                                              '<br/>&nbsp;&nbsp;/help' +
                                                                              '</td>';
       // change the name to "help"
@@ -331,27 +332,63 @@ function longPoll(data){
           if(!CONFIG.focus){
             CONFIG.unread++;
           }
-          addMessage(message.nick, message.color, message.text, message.timestamp);
+          addMessage(CONFIG.nick, CONFIG.color, message.text, message.timestamp);
           break;
 
         case "me":
-          addMessage(message.nick, message.color, message.text, message.timestamp, "me");
+          addMessage(CONFIG.nick, CONFIG.color, message.text, message.timestamp, "me");
+          break;
+
+        case "set":
+          var key = message.text.split(";")[0];
+          var val = message.text.split(";")[1];
+          if (key == "nick"){
+            if (val.length > 50){
+              addMessage(CONFIG.nick, CONFIG.color, "nick too long, 50 chars max.", message.timestamp, "error");
+              break;
+            }
+            if (/[^\w\-_^!]/.exec(val)){
+              addMessage(CONFIG.nick, CONFIG.color, "wrong nick format, can only be letters, numbers, and '_', '-', '^'", message.timestamp, "error");
+              break;
+            }
+
+            addMessage(CONFIG.nick, CONFIG.color, "i'm now known as '" + val + "'", message.timestamp, "me");
+            CONFIG.nick = val;
+            setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000);
+            $("#userName").html("&nbsp;" + CONFIG.nick);
+          }
+          else if (key == "color"){
+            if (!val.match(/^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/)){
+              addMessage(CONFIG.nick, CONFIG.color, "bad hex format", message.timestamp, "error");
+              break;
+            }
+            // check if he typed also the hash symbol
+            // if not: fix it
+            if (val.slice(0,1) != "#")
+              val = "#" + val;
+
+            CONFIG.color = val;
+            setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000);
+            $("#toolbar").css("background", CONFIG.color);
+          } else {
+            addMessage(CONFIG.nick, CONFIG.color, "unknown key '" + key + "'", message.timestamp, "error");
+          }
           break;
 
         case "help":
-          addMessage(message.nick, message.color, message.text, message.timestamp, "help");
+          addMessage(CONFIG.nick, CONFIG.color, message.text, message.timestamp, "help");
           break;
 
         case "error":
-          addMessage(message.nick, message.color, message.text, message.timestamp, "error");
+          addMessage(CONFIG.nick, CONFIG.color, message.text, message.timestamp, "error");
           break;
 
         case "join":
-          userJoin(message.nick, message.timestamp);
+          userJoin(CONFIG.nick, message.timestamp);
           break;
 
         case "part":
-          userPart(message.nick, message.timestamp);
+          userPart(CONFIG.nick, message.timestamp);
           break;
       }
     }

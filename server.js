@@ -215,7 +215,7 @@ fu.get("/send", function(req, res){
   // we check if user has written some command, like '/me walks into a bar.'
   var m;
   // check if it's some sort of a command
-  if (m = text.match(/^\/([\w]+)(\s)?(.*)$/)){
+  if (m = text.match(/^\/([\w]+)(\s)*(.*)$/)){
     switch (m[1]){
       case "me":
         if (m[2] == null) break;
@@ -228,6 +228,16 @@ fu.get("/send", function(req, res){
         text = "";
         channel.appendMessage(session.nick, session.color, "help", text);
         break;
+
+      case "set":
+        text = text.slice(5);
+        if (m = text.match(/^(.*)\s+(.*)$/)){
+          channel.appendMessage(session.nick, session.color, "set", m[1] + ";" + m[2]);
+        } else {
+          channel.appendMessage(session.nick, session.color, "error", "syntax error, should be: /set key value");
+        }
+        break;
+
       default:
         channel.appendMessage(session.nick, session.color, "error", "unknown command: \"" + m[1] + "\"");
     }
