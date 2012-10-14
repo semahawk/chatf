@@ -526,9 +526,9 @@ function changeNick(newnick){
            },
            success: function (data) {
              addMessage(CONFIG.nick, CONFIG.color, "is now known as '" + newnick + "'", new Date(), "me");
-             CONFIG.nick = newnick;
-             setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000);
-             $("#userName").html("&nbsp;" + CONFIG.nick);
+             //CONFIG.nick = newnick;
+             setCookie("beenhere", "nick:" + newnick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000);
+             $("#userName").html("&nbsp;" + newnick);
            },
          });
 }
@@ -543,9 +543,9 @@ function changeColor(newcolor){
              addMessage(CONFIG.nick, CONFIG.color, "couldn't change color", "error");
            },
            success: function (data) {
-             CONFIG.color = newcolor;
-             setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000);
-             $("#toolbar").css("background", CONFIG.color);
+             //CONFIG.color = newcolor;
+             setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + newcolor, 7 * 24 * 60 * 60 * 1000);
+             $("#toolbar").css("background", newcolor);
            },
          });
 }

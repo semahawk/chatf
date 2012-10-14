@@ -259,6 +259,7 @@ fu.get("/changenick", function(req, res){
     return;
   }
 
+  session.poke();
   session.nick = newnick;
 
   res.simpleJSON(200, { rss: mem.rss });
@@ -274,6 +275,7 @@ fu.get("/changecolor", function(req, res){
     return;
   }
 
+  session.poke();
   session.color = newcolor;
 
   res.simpleJSON(200, { rss: mem.rss });
