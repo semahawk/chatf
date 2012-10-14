@@ -525,8 +525,7 @@ function changeNick(newnick){
              addMessage(CONFIG.nick, CONFIG.color, "couldn't change nick", "error");
            },
            success: function (data) {
-             CONFIG.nick = newnick;
-             addMessage(CONFIG.nick, CONFIG.color, "i'm now known as '" + newnick + "'", new Date(), "me");
+             addMessage(CONFIG.nick, CONFIG.color, "is now known as '" + newnick + "'", new Date(), "me");
              CONFIG.nick = newnick;
              setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000);
              $("#userName").html("&nbsp;" + CONFIG.nick);
