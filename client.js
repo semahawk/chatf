@@ -343,7 +343,7 @@ function longPoll(data){
           break;
 
         case "error":
-          error(message.text);
+          addMessage(message.nick, message.color, message.text, message.timestamp, "error");
           break;
 
         case "join":
@@ -466,10 +466,6 @@ function onConnect(session){
   $("#userName").html("&nbsp;" + CONFIG.nick);
   $("#version").html(VERSION + "v");
   $("#toolbar").css("background", CONFIG.color);
-}
-
-function error(msg){
-  addMessage(CONFIG.nick, "#999", msg, new Date(), "error");
 }
 
 // add a list of present chat members to the stream
