@@ -252,15 +252,12 @@ fu.get("/send", function(req, res){
 fu.get("/changenick", function(req, res){
   var id = qs.parse(url.parse(req.url).query).id;
   var newnick = qs.parse(url.parse(req.url).query).newnick;
+  var session;
 
-  var session = sessions[id];
-  if (!session){
-    res.simpleJSON(400, { error: "There is no such id" });
-    return;
+  if (id && sessions[id]){
+    session = sessions[id];
+    session.nick = newnick;
   }
-
-  session.poke();
-  session.nick = newnick;
 
   res.simpleJSON(200, { rss: mem.rss });
 });
@@ -268,15 +265,12 @@ fu.get("/changenick", function(req, res){
 fu.get("/changecolor", function(req, res){
   var id = qs.parse(url.parse(req.url).query).id;
   var newcolor = qs.parse(url.parse(req.url).query).newcolor;
+  var session;
 
-  var session = sessions[id];
-  if (!session){
-    res.simpleJSON(400, { error: "There is no such id" });
-    return;
+  if (id && sessions[id]){
+    session = sessions[id];
+    session.color = newcolor;
   }
-
-  session.poke();
-  session.color = newcolor;
 
   res.simpleJSON(200, { rss: mem.rss });
 });

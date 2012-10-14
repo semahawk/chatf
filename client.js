@@ -496,6 +496,7 @@ function onConnect(session){
   });
 
   $("#userName").html("&nbsp;" + CONFIG.nick);
+  $("#userId").html("(" + CONFIG.id + ")");
   $("#version").html(VERSION + "v");
   $("#toolbar").css("background", CONFIG.color);
 }
