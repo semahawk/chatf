@@ -256,7 +256,8 @@ fu.get("/changenick", function(req, res){
 
   if (id && sessions[id]){
     session = sessions[id];
-    session.nick = newnick;
+    if (session.id == id)
+      session.nick = newnick;
   }
 
   res.simpleJSON(200, { rss: mem.rss });
@@ -269,7 +270,8 @@ fu.get("/changecolor", function(req, res){
 
   if (id && sessions[id]){
     session = sessions[id];
-    session.color = newcolor;
+    if (session.id == id)
+      session.color = newcolor;
   }
 
   res.simpleJSON(200, { rss: mem.rss });
