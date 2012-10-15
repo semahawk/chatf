@@ -229,7 +229,6 @@ function addMessage(from, color, text, time, type = "normal"){
     case "help":
       // show him the help
       msg_text = '  <td class="msg-text" style="color: #777">dostępne komendy:<br/>&nbsp;&nbsp;/me TEKST' +
-                                                                             '<br/>&nbsp;&nbsp;/set nick|color VALUE' +
                                                                              '<br/>&nbsp;&nbsp;/help' +
                                                                              '</td>';
       // change the name to "help"
@@ -337,37 +336,6 @@ function longPoll(data){
 
         case "me":
           addMessage(message.nick, message.color, message.text, message.timestamp, "me");
-          break;
-
-        case "set":
-          var key = message.text.split(";")[0];
-          var val = message.text.split(";")[1];
-          if (key == "nick"){
-            if (val.length > 50){
-              addMessage(message.nick, message.color, "nick too long, 50 chars max.", message.timestamp, "error");
-              break;
-            }
-            if (/[^\w\-_^!]/.exec(val)){
-              addMessage(message.nick, message.color, "wrong nick format, can only be letters, numbers, and '_', '-', '^'", message.timestamp, "error");
-              break;
-            }
-
-            changeNick(val);
-          }
-          else if (key == "color"){
-            if (!val.match(/^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/)){
-              addMessage(message.nick, message.color, "bad hex format", message.timestamp, "error");
-              break;
-            }
-            // check if he typed also the hash symbol
-            // if not: fix it
-            if (val.slice(0,1) != "#")
-              val = "#" + val;
-
-            changeColor(val);
-          } else {
-            addMessage(message.nick, message.color, "unknown key '" + key + "'", message.timestamp, "error");
-          }
           break;
 
         case "help":
@@ -496,7 +464,6 @@ function onConnect(session){
   });
 
   $("#userName").html("&nbsp;" + CONFIG.nick);
-  $("#userId").html("(" + CONFIG.id + ")");
   $("#version").html(VERSION + "v");
   $("#toolbar").css("background", CONFIG.color);
 }
@@ -514,41 +481,6 @@ function who(){
     nicks = data.nicks;
     outputUsers();
   }, "json");
-}
-
-function changeNick(newnick){
-  $.ajax({ cache: false,
-           type: "GET",
-           url: "/changenick",
-           dataType: "json",
-           data: { id: CONFIG.id, newnick: newnick },
-           error: function () {
-             addMessage(CONFIG.nick, CONFIG.color, "couldn't change nick", "error");
-           },
-           success: function (data) {
-             addMessage(CONFIG.nick, CONFIG.color, "is now known as '" + newnick + "'", new Date(), "me");
-             //CONFIG.nick = newnick;
-             setCookie("beenhere", "nick:" + newnick + "|color:" + CONFIG.color, 7 * 24 * 60 * 60 * 1000);
-             $("#userName").html("&nbsp;" + newnick);
-           },
-         });
-}
-
-function changeColor(newcolor){
-  $.ajax({ cache: false,
-           type: "GET",
-           url: "/changecolor",
-           dataType: "json",
-           data: { id: CONFIG.id, newcolor: newcolor },
-           error: function () {
-             addMessage(CONFIG.nick, CONFIG.color, "couldn't change color", "error");
-           },
-           success: function (data) {
-             //CONFIG.color = newcolor;
-             setCookie("beenhere", "nick:" + CONFIG.nick + "|color:" + newcolor, 7 * 24 * 60 * 60 * 1000);
-             $("#toolbar").css("background", newcolor);
-           },
-         });
 }
 
 $(document).ready(function(){

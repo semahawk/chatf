@@ -229,49 +229,12 @@ fu.get("/send", function(req, res){
         channel.appendMessage(session.nick, session.color, "help", text);
         break;
 
-      case "set":
-        text = text.slice(5);
-        if (m = text.match(/^(.*)\s+(.*)$/)){
-          channel.appendMessage(session.nick, session.color, "set", m[1] + ";" + m[2]);
-        } else {
-          channel.appendMessage(session.nick, session.color, "error", "syntax error, should be: /set key value");
-        }
-        break;
-
       default:
         channel.appendMessage(session.nick, session.color, "error", "unknown command: \"" + m[1] + "\"");
     }
   // it just a ordinary message
   } else {
     channel.appendMessage(session.nick, session.color, "msg", text);
-  }
-
-  res.simpleJSON(200, { rss: mem.rss });
-});
-
-fu.get("/changenick", function(req, res){
-  var id = qs.parse(url.parse(req.url).query).id;
-  var newnick = qs.parse(url.parse(req.url).query).newnick;
-  var session;
-
-  if (id && sessions[id]){
-    session = sessions[id];
-    if (session.id == id)
-      session.nick = newnick;
-  }
-
-  res.simpleJSON(200, { rss: mem.rss });
-});
-
-fu.get("/changecolor", function(req, res){
-  var id = qs.parse(url.parse(req.url).query).id;
-  var newcolor = qs.parse(url.parse(req.url).query).newcolor;
-  var session;
-
-  if (id && sessions[id]){
-    session = sessions[id];
-    if (session.id == id)
-      session.color = newcolor;
   }
 
   res.simpleJSON(200, { rss: mem.rss });
