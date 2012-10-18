@@ -390,7 +390,7 @@ function longPoll(data){
          , dataType: "json"
          , data: { since: CONFIG.last_message_time, id: CONFIG.id }
          , error: function () {
-             if (CONFIG.debug) $("#userName").html("!" + CONFIG.nick);
+             $("#userName").html("!" + CONFIG.nick);
              // Wait 1 sec before retrying. We're gonna output info after every ten secends however. Yay!
              setTimeout(longPoll, 1000);
            }
@@ -403,7 +403,7 @@ function longPoll(data){
              longPoll(data);
            }
          });
-  if (CONFIG.debug) $("#userName").html("&nbsp;" + CONFIG.nick);
+  $("#userName").html("&nbsp;" + CONFIG.nick);
 }
 
 // submit a new message to the server
