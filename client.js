@@ -259,6 +259,12 @@ function addMessage(from, color, text, time, type = "normal"){
   // check if the messages text matches this primitive regexp
   if (text.match(re)){
     paren_color = "#B5B5B5";
+    if (!CONFIG.focus){
+      // he was mentioned, and has unfocused chat window
+      // summon him!
+      var sound = $('#sound')[0];
+      sound.play();
+    }
   }
 
   var content = '<tr>'
@@ -330,9 +336,6 @@ function longPoll(data){
         case "msg":
           if(!CONFIG.focus){
             CONFIG.unread++;
-            // play the sound, yeaay!
-            var sound = $('#sound')[0];
-            sound.play();
           }
           addMessage(message.nick, message.color, message.text, message.timestamp);
           break;
