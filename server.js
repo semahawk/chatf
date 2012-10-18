@@ -129,6 +129,7 @@ fu.get("/", fu.staticHandler("index.html"));
 fu.get("/style.css", fu.staticHandler("style.css"));
 fu.get("/client.js", fu.staticHandler("client.js"));
 fu.get("/jquery.js", fu.staticHandler("jquery.js"));
+fu.get("/drip.ogg", fu.staticHandler("drip.ogg"));
 
 fu.get("/who", function(req, res){
   var nicks = [];
