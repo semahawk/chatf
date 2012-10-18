@@ -330,6 +330,9 @@ function longPoll(data){
         case "msg":
           if(!CONFIG.focus){
             CONFIG.unread++;
+            // play the sound, yeaay!
+            var sound = $('#sound')[0];
+            sound.play();
           }
           addMessage(message.nick, message.color, message.text, message.timestamp);
           break;
