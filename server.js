@@ -230,6 +230,11 @@ fu.get("/send", function(req, res){
         channel.appendMessage(session.nick, session.color, "help", text);
         break;
 
+      case "delete":
+        text = "";
+        channel.appendMessage(session.nick, session.color, "delete", text);
+        break;
+
       default:
         channel.appendMessage(session.nick, session.color, "error", "unknown command: \"" + m[1] + "\"");
     }

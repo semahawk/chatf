@@ -181,6 +181,11 @@ function getCookie(key){
   return keyValue ? keyValue[2] : null;
 }
 
+// deleteCookie('yeay'); deletes a cookie named 'yeay'
+function deleteCookie(key){
+  document.cookie = key + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
 // used to keep the most recent messages visible
 function scrollDown(){
   window.scrollBy(0, 1000000000);
@@ -228,8 +233,9 @@ function addMessage(from, color, text, time, type = "normal"){
 
     case "help":
       // show him the help
-      msg_text = '  <td class="msg-text" style="color: #777">dostępne komendy:<br/>&nbsp;&nbsp;/me TEKST' +
-                                                                             '<br/>&nbsp;&nbsp;/help' +
+      msg_text = '  <td class="msg-text" style="color: #777">dostępne komendy:<br/>&nbsp;&nbsp;/me TEKST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pisz tekst w trzeciej osobie' +
+                                                                             '<br/>&nbsp;&nbsp;/delete&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;usuń ciasteczko' +
+                                                                             '<br/>&nbsp;&nbsp;/help&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wyświetl pomoc' +
                                                                              '</td>';
       // change the name to "help"
       //from = "help";
@@ -346,6 +352,11 @@ function longPoll(data){
 
         case "help":
           addMessage(message.nick, message.color, message.text, message.timestamp, "help");
+          break;
+
+        case "delete":
+          deleteCookie("beenhere");
+          addMessage(message.nick, message.color, "cookie was successfully deleted", message.timestamp, "error");
           break;
 
         case "error":
