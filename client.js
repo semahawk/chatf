@@ -263,17 +263,20 @@ function addMessage(from, color, text, time, type){
   // parenthesis color
   var paren_color = "#32363B";
 
-  // new Regular Expression object
-  var re = new RegExp(CONFIG.nick, "i");
-  // check if the messages text matches this primitive regexp
-  if (text.match(re)){
-    paren_color = "#B5B5B5";
-    if (!CONFIG.focus){
-      // he was mentioned, and has unfocused chat window
-      // summon him!
-      var sound = $('#sound')[0];
-      sound.play();
+  if (!CONFIG.focus){
+    // our sound track to be played
+    var sound;
+    // new Regular Expression object
+    var re = new RegExp(CONFIG.nick, "i");
+    // check if the messages text matches this primitive regexp
+    if (text.match(re)){
+      paren_color = "#B5B5B5";
+      sound = $("#drip")[0];
+    } else {
+      sound = $("#glass")[0];
     }
+
+    sound.play();
   }
 
   var content = '<tr>'
