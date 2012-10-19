@@ -188,7 +188,8 @@ function deleteCookie(key){
 
 // used to keep the most recent messages visible
 function scrollDown(){
-  window.scrollBy(0, 1000000000);
+  //window.scrollBy(0, 1000000000);
+  $('html, body').animate({scrollTop: $(document).height()}, 5000);
   $("entry").focus();
 }
 
