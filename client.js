@@ -197,8 +197,11 @@ function scrollDown(){
 // from is the user, text is the body and time is the timestamp, defaulting
 // to now. _class is a css class to apply to the message, usefull for system
 // events.
-function addMessage(from, color, text, time, type = "normal"){
+function addMessage(from, color, text, time, type){
   if (text === null) return;
+
+  // set the default value of 'type'
+  if (type === null) type = "normal";
 
   if (time == null){
    time = new Date();
@@ -408,9 +411,7 @@ function longPoll(data){
 
 // submit a new message to the server
 function send(msg){
-  if (CONFIG.debug === false){
-    jQuery.get("/send", { id: CONFIG.id, text: msg }, function(data){}, "json");
-  }
+  jQuery.get("/send", { id: CONFIG.id, text: msg }, function(data){}, "json");
 }
 
 function showConnect(){
